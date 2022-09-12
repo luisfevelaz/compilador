@@ -7,11 +7,16 @@ package Ventanas;
 
 
 import java.awt.Color;
+import java.io.BufferedReader;
 import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import static java.time.Clock.system;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -34,6 +39,7 @@ public class Interfaz extends javax.swing.JFrame {
     FileInputStream entrada;
     FileOutputStream salida;
     File archivo;
+    String nombreArchivo;
     int editarBandera = 0;
 
     /**
@@ -170,6 +176,7 @@ public class Interfaz extends javax.swing.JFrame {
         subMenuGuardar = new javax.swing.JMenuItem();
         subMenuGuardarComo = new javax.swing.JMenuItem();
         subMenuSalir = new javax.swing.JMenuItem();
+        itemCompilar = new javax.swing.JMenuItem();
         menuEditar = new javax.swing.JMenu();
         menuFormato = new javax.swing.JMenu();
         menuCompilar = new javax.swing.JMenu();
@@ -274,6 +281,14 @@ public class Interfaz extends javax.swing.JFrame {
         subMenuSalir.setText("Salir");
         menuArchivos.add(subMenuSalir);
 
+        itemCompilar.setText("Compilar");
+        itemCompilar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemCompilarActionPerformed(evt);
+            }
+        });
+        menuArchivos.add(itemCompilar);
+
         menu.add(menuArchivos);
 
         menuEditar.setText("Editar");
@@ -288,9 +303,19 @@ public class Interfaz extends javax.swing.JFrame {
         menu.add(menuFormato);
 
         menuCompilar.setText("Compilar");
+        menuCompilar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuCompilarActionPerformed(evt);
+            }
+        });
         menu.add(menuCompilar);
 
         menuAyuda.setText("Ayuda");
+        menuAyuda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuAyudaActionPerformed(evt);
+            }
+        });
         menu.add(menuAyuda);
 
         setJMenuBar(menu);
@@ -317,6 +342,7 @@ public class Interfaz extends javax.swing.JFrame {
         if(seleccionado.showDialog(this, "Abrir archivo") == JFileChooser.APPROVE_OPTION){
             archivo = seleccionado.getSelectedFile();
             if(archivo.getName().endsWith("txt")){
+                this.nombreArchivo = archivo.getName();
                 String contenido = this.abrirArchivo(archivo);
                 this.txtAreaCompilarD.setText(contenido);
             }
@@ -365,6 +391,27 @@ public class Interfaz extends javax.swing.JFrame {
     private void txtAreaCompilarDKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtAreaCompilarDKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_txtAreaCompilarDKeyReleased
+
+    private void menuCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCompilarActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Compilaaaaaaaaaaaaaaaaaaaa");
+        //this.sintactico();
+    }//GEN-LAST:event_menuCompilarActionPerformed
+
+    private void menuAyudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAyudaActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Compilaaaaaaaaaaaaaaaaaaaa");
+    }//GEN-LAST:event_menuAyudaActionPerformed
+
+    private void itemCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCompilarActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Compilaaaaaaaaaaaaaaaaaaaa");
+        try {
+            this.sintactico();
+        } catch (IOException ex) {
+            
+        }
+    }//GEN-LAST:event_itemCompilarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -426,10 +473,30 @@ public class Interfaz extends javax.swing.JFrame {
         }catch(Exception e){}
         return respuesta;
     }
+    
+    public void sintactico() throws IOException{
+        ProcessBuilder builder = new ProcessBuilder(
+                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\" && sintactico", this.nombreArchivo
+        );
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        String txtSintactico = null;
+        while (true) {
+            line = r.readLine();
+            if (line == null) { break; }
+            txtSintactico+= line+"\n";
+            System.out.println(line);
+        }
+        this.txtAreaSintactico.setText(txtSintactico);
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel fondo;
     private javax.swing.JLabel instruccionCompilar;
+    private javax.swing.JMenuItem itemCompilar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuBar menu;
     private javax.swing.JMenu menuArchivos;
