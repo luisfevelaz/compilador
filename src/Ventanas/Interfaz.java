@@ -394,13 +394,13 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void menuCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuCompilarActionPerformed
         // TODO add your handling code here:
-        System.out.println("Compilaaaaaaaaaaaaaaaaaaaa");
+        
         //this.sintactico();
     }//GEN-LAST:event_menuCompilarActionPerformed
 
     private void menuAyudaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAyudaActionPerformed
         // TODO add your handling code here:
-        System.out.println("Compilaaaaaaaaaaaaaaaaaaaa");
+        
     }//GEN-LAST:event_menuAyudaActionPerformed
 
     private void itemCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCompilarActionPerformed
