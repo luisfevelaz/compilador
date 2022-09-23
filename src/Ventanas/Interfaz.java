@@ -176,10 +176,10 @@ public class Interfaz extends javax.swing.JFrame {
         subMenuGuardar = new javax.swing.JMenuItem();
         subMenuGuardarComo = new javax.swing.JMenuItem();
         subMenuSalir = new javax.swing.JMenuItem();
-        itemCompilar = new javax.swing.JMenuItem();
         menuEditar = new javax.swing.JMenu();
         menuFormato = new javax.swing.JMenu();
         menuCompilar = new javax.swing.JMenu();
+        btnCompilacion = new javax.swing.JMenuItem();
         menuAyuda = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -281,14 +281,6 @@ public class Interfaz extends javax.swing.JFrame {
         subMenuSalir.setText("Salir");
         menuArchivos.add(subMenuSalir);
 
-        itemCompilar.setText("Compilar");
-        itemCompilar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                itemCompilarActionPerformed(evt);
-            }
-        });
-        menuArchivos.add(itemCompilar);
-
         menu.add(menuArchivos);
 
         menuEditar.setText("Editar");
@@ -308,6 +300,15 @@ public class Interfaz extends javax.swing.JFrame {
                 menuCompilarActionPerformed(evt);
             }
         });
+
+        btnCompilacion.setText("Iniciar");
+        btnCompilacion.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCompilacionActionPerformed(evt);
+            }
+        });
+        menuCompilar.add(btnCompilacion);
+
         menu.add(menuCompilar);
 
         menuAyuda.setText("Ayuda");
@@ -335,44 +336,6 @@ public class Interfaz extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void subMenuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuAbrirActionPerformed
-        // TODO add your handling code here: 
-        System.out.println("Abrir");
-        if(seleccionado.showDialog(this, "Abrir archivo") == JFileChooser.APPROVE_OPTION){
-            archivo = seleccionado.getSelectedFile();
-            if(archivo.getName().endsWith("txt")){
-                this.nombreArchivo = archivo.getName();
-                String contenido = this.abrirArchivo(archivo);
-                this.txtAreaCompilarD.setText(contenido);
-            }
-        }
-
-    }//GEN-LAST:event_subMenuAbrirActionPerformed
-
-    private void subMenuCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuCerrarActionPerformed
-        // TODO add your handling code here:
-        System.out.println("Cerrar");
-        
-    }//GEN-LAST:event_subMenuCerrarActionPerformed
-
-    private void subMenuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuGuardarActionPerformed
-        // TODO add your handling code here:
-        System.out.println("Guardar");
-        System.out.println(this.txtAreaCompilarD.getText());
-        if(seleccionado.showDialog(null,"Guardar archivo") == JFileChooser.APPROVE_OPTION){
-            archivo = seleccionado.getSelectedFile();
-            if(archivo.getName().endsWith("txt")){
-                String contenido = this.txtAreaCompilarD.getText();
-                String respuesta = this.guardarTexto(archivo, contenido);
-                if(respuesta != null){
-                    JOptionPane.showMessageDialog(null,respuesta);
-                }else{
-                    JOptionPane.showMessageDialog(null,"No se pudo guardar el texto");
-                }
-            }
-        }
-    }//GEN-LAST:event_subMenuGuardarActionPerformed
 
     private void menuEditarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_menuEditarMouseClicked
         // TODO add your handling code here:
@@ -403,15 +366,57 @@ public class Interfaz extends javax.swing.JFrame {
         
     }//GEN-LAST:event_menuAyudaActionPerformed
 
-    private void itemCompilarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemCompilarActionPerformed
+    private void btnCompilacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilacionActionPerformed
         // TODO add your handling code here:
-        System.out.println("Compilaaaaaaaaaaaaaaaaaaaa");
         try {
             this.sintactico();
         } catch (IOException ex) {
             
         }
-    }//GEN-LAST:event_itemCompilarActionPerformed
+        
+        try {
+            this.lexico();
+        } catch (IOException ex) {
+            
+        }
+    }//GEN-LAST:event_btnCompilacionActionPerformed
+
+    private void subMenuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuGuardarActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Guardar");
+        System.out.println(this.txtAreaCompilarD.getText());
+        if(seleccionado.showDialog(null,"Guardar archivo") == JFileChooser.APPROVE_OPTION){
+            archivo = seleccionado.getSelectedFile();
+            if(archivo.getName().endsWith("txt")){
+                String contenido = this.txtAreaCompilarD.getText();
+                String respuesta = this.guardarTexto(archivo, contenido);
+                if(respuesta != null){
+                    JOptionPane.showMessageDialog(null,respuesta);
+                }else{
+                    JOptionPane.showMessageDialog(null,"No se pudo guardar el texto");
+                }
+            }
+        }
+    }//GEN-LAST:event_subMenuGuardarActionPerformed
+
+    private void subMenuCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuCerrarActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Cerrar");
+
+    }//GEN-LAST:event_subMenuCerrarActionPerformed
+
+    private void subMenuAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuAbrirActionPerformed
+        // TODO add your handling code here:
+        System.out.println("Abrir");
+        if(seleccionado.showDialog(this, "Abrir archivo") == JFileChooser.APPROVE_OPTION){
+            archivo = seleccionado.getSelectedFile();
+            if(archivo.getName().endsWith("txt")){
+                this.nombreArchivo = archivo.getName();
+                String contenido = this.abrirArchivo(archivo);
+                this.txtAreaCompilarD.setText(contenido);
+            }
+        }
+    }//GEN-LAST:event_subMenuAbrirActionPerformed
 
     /**
      * @param args the command line arguments
@@ -492,11 +497,29 @@ public class Interfaz extends javax.swing.JFrame {
         this.txtAreaSintactico.setText(txtSintactico);
         
     }
+    
+    public void lexico() throws IOException{
+        ProcessBuilder builder = new ProcessBuilder(
+                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\" && lexico", this.nombreArchivo
+        );
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        String txtLexico = null;
+        while (true) {
+            line = r.readLine();
+            if (line == null) { break; }
+            txtLexico+= line+"\n";
+            System.out.println(line);
+        }
+        this.txtAreaLexico.setText(txtLexico);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem btnCompilacion;
     private javax.swing.JPanel fondo;
     private javax.swing.JLabel instruccionCompilar;
-    private javax.swing.JMenuItem itemCompilar;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenuBar menu;
     private javax.swing.JMenu menuArchivos;
