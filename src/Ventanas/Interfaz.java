@@ -157,10 +157,10 @@ public class Interfaz extends javax.swing.JFrame {
         txtAreaLexico = new javax.swing.JTextArea();
         scrollSintactico = new javax.swing.JScrollPane();
         txtAreaSintactico = new javax.swing.JTextArea();
-        scrollSemantico = new javax.swing.JScrollPane();
-        txtAreaSemantico = new javax.swing.JTextArea();
         scrollCodigoIntermedio = new javax.swing.JScrollPane();
         txtAreaCodigoIntermedio = new javax.swing.JTextArea();
+        scrollSemantico = new javax.swing.JScrollPane();
+        txtAreaSemantico = new javax.swing.JTextArea();
         instruccionCompilar = new javax.swing.JLabel();
         multipanelBajo = new javax.swing.JTabbedPane();
         scrollErrores = new javax.swing.JScrollPane();
@@ -204,19 +204,18 @@ public class Interfaz extends javax.swing.JFrame {
 
         multipanelDerecho.addTab("Sintactico", scrollSintactico);
 
-        txtAreaSemantico.setColumns(20);
-        txtAreaSemantico.setRows(5);
-        txtAreaSemantico.setText("c");
-        scrollSemantico.setViewportView(txtAreaSemantico);
-
-        multipanelDerecho.addTab("Sintactico", scrollSemantico);
-
         txtAreaCodigoIntermedio.setColumns(20);
         txtAreaCodigoIntermedio.setRows(5);
         txtAreaCodigoIntermedio.setText("d");
         scrollCodigoIntermedio.setViewportView(txtAreaCodigoIntermedio);
 
         multipanelDerecho.addTab("Codigo Intermedio", scrollCodigoIntermedio);
+
+        txtAreaSemantico.setColumns(20);
+        txtAreaSemantico.setRows(5);
+        scrollSemantico.setViewportView(txtAreaSemantico);
+
+        multipanelDerecho.addTab("Semántico", scrollSemantico);
 
         fondo.add(multipanelDerecho, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 50, 280, 340));
 
@@ -379,6 +378,11 @@ public class Interfaz extends javax.swing.JFrame {
         } catch (IOException ex) {
             
         }
+        try {
+            this.semantico();
+        } catch (IOException ex) {
+            
+        }
     }//GEN-LAST:event_btnCompilacionActionPerformed
 
     private void subMenuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuGuardarActionPerformed
@@ -481,7 +485,7 @@ public class Interfaz extends javax.swing.JFrame {
     
     public void sintactico() throws IOException{
         ProcessBuilder builder = new ProcessBuilder(
-                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\" && sintactico", this.nombreArchivo
+                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\\ejecutables\" && sintactico", this.nombreArchivo
         );
         builder.redirectErrorStream(true);
         Process p = builder.start();
@@ -500,7 +504,7 @@ public class Interfaz extends javax.swing.JFrame {
     
     public void lexico() throws IOException{
         ProcessBuilder builder = new ProcessBuilder(
-                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\" && lexico", this.nombreArchivo
+                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\\ejecutables\" && lexico", this.nombreArchivo
         );
         builder.redirectErrorStream(true);
         Process p = builder.start();
@@ -514,6 +518,25 @@ public class Interfaz extends javax.swing.JFrame {
             System.out.println(line);
         }
         this.txtAreaLexico.setText(txtLexico);
+    }
+    
+    public void semantico() throws IOException{
+        ProcessBuilder builder = new ProcessBuilder(
+                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\\ejecutables\" && semantico", this.nombreArchivo
+        );
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        String txtSemantico = null;
+        while (true) {
+            line = r.readLine();
+            if (line == null) { break; }
+            txtSemantico+= line+"\n";
+            System.out.println(line);
+        }
+        
+        this.txtAreaSemantico.setText(txtSemantico);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
