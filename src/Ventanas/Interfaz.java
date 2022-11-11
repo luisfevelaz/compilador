@@ -206,7 +206,6 @@ public class Interfaz extends javax.swing.JFrame {
 
         txtAreaCodigoIntermedio.setColumns(20);
         txtAreaCodigoIntermedio.setRows(5);
-        txtAreaCodigoIntermedio.setText("d");
         scrollCodigoIntermedio.setViewportView(txtAreaCodigoIntermedio);
 
         multipanelDerecho.addTab("Codigo Intermedio", scrollCodigoIntermedio);
@@ -367,7 +366,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void btnCompilacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCompilacionActionPerformed
         // TODO add your handling code here:
-        try {
+        /*try {
             this.sintactico();
         } catch (IOException ex) {
             
@@ -377,9 +376,14 @@ public class Interfaz extends javax.swing.JFrame {
             this.lexico();
         } catch (IOException ex) {
             
-        }
-        try {
+        }*/
+        /*try {
             this.semantico();
+        } catch (IOException ex) {
+            
+        }*/
+        try {
+            this.intermedio();
         } catch (IOException ex) {
             
         }
@@ -536,7 +540,30 @@ public class Interfaz extends javax.swing.JFrame {
             System.out.println(line);
         }
         
-        this.txtAreaSemantico.setText(txtSemantico);
+       this.txtAreaSemantico.setText(txtSemantico);
+    }
+    
+    public void intermedio() throws IOException{
+         ProcessBuilder builder = new ProcessBuilder(
+                "cmd.exe", "/c","cd \"C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\\ejecutables\" && inte", this.nombreArchivo
+        );
+        builder.redirectErrorStream(true);
+        Process p = builder.start();
+        BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        String txtSemantico = "";
+        int count = 1;
+        while (true) {
+            
+            line = r.readLine();
+            if (line == null) { break; }
+            
+            txtSemantico+=count+")  "+line.trim()+"\n";
+            System.out.println(line);
+            count++;
+        }
+        
+        this.txtAreaCodigoIntermedio.setText(txtSemantico);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
