@@ -12,9 +12,11 @@ import java.io.Console;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import static java.time.Clock.system;
+import java.util.Deque;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BorderFactory;
@@ -41,6 +43,13 @@ public class Interfaz extends javax.swing.JFrame {
     File archivo;
     String nombreArchivo;
     int editarBandera = 0;
+    
+    //Para el código intermedio
+    public int numLinea;
+    public int banderaBloque;
+    public int numLabel;
+    public  Deque<Salto> deque;
+    String LINEA =" ";
 
     /**
      * Creates new form Interfaz
@@ -382,11 +391,7 @@ public class Interfaz extends javax.swing.JFrame {
         } catch (IOException ex) {
             
         }*/
-        try {
-            this.intermedio();
-        } catch (IOException ex) {
-            
-        }
+        this.LecturaIntermedio();
     }//GEN-LAST:event_btnCompilacionActionPerformed
 
     private void subMenuGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_subMenuGuardarActionPerformed
@@ -500,7 +505,7 @@ public class Interfaz extends javax.swing.JFrame {
             line = r.readLine();
             if (line == null) { break; }
             txtSintactico+= line+"\n";
-            System.out.println(line);
+            //System.out.println(line);
         }
         this.txtAreaSintactico.setText(txtSintactico);
         
@@ -519,7 +524,7 @@ public class Interfaz extends javax.swing.JFrame {
             line = r.readLine();
             if (line == null) { break; }
             txtLexico+= line+"\n";
-            System.out.println(line);
+            //System.out.println(line);
         }
         this.txtAreaLexico.setText(txtLexico);
     }
@@ -537,7 +542,7 @@ public class Interfaz extends javax.swing.JFrame {
             line = r.readLine();
             if (line == null) { break; }
             txtSemantico+= line+"\n";
-            System.out.println(line);
+            //System.out.println(line);
         }
         
        this.txtAreaSemantico.setText(txtSemantico);
@@ -565,7 +570,147 @@ public class Interfaz extends javax.swing.JFrame {
         
         this.txtAreaCodigoIntermedio.setText(txtSemantico);
     }
+    
+    public void LecturaIntermedio(){
+        //String nombre = "C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\\ejecutables\\"+this.nombreArchivo;
+        
+        BufferedReader br = null;
+        
+        try{
+            br = new BufferedReader(new FileReader("C:\\Users\\Admin\\Documents\\compiladores\\Proyecto\\ejecutables\\"+this.nombreArchivo));
+            String texto = br.readLine();
+           
+            while(texto != null){
+                System.out.println(texto);
+                this.revisarLinea(texto, this.numLinea);
+                texto = br.readLine();
+                this.numLinea++;
+            }
+            System.out.println("LINEAA:\n");
+            System.out.println(this.LINEA);
+            this.txtAreaCodigoIntermedio.setText(this.LINEA);
+        }catch(Exception e){
+            
+        }finally {
+           
+            try {
+                // Cerrar el fichero si se ha podido abrir
+                if(br != null) {
+                    br.close();
+                }
+            }
+            catch (Exception ex) {
+                System.out.println("Error al cerrar el fichero");
+                ex.printStackTrace();
+            }
+        }
+    }
 
+    public String sinPuntoYComa(String linea){
+        String cadena = " ";
+        for(int i = 0; i<linea.length(); i++){
+            if(linea.charAt(i) == ';')
+                break;
+            if(linea.charAt(i) != ' '){
+                cadena+=linea.charAt(i);
+            }
+        }
+        return cadena;
+    }
+    
+    public String imprimirWhile(String condicion){
+        String condicionFinal = " ";
+        for(int i = 0; i<condicion.length(); i++){
+            if(condicion.charAt(i) != '(' && condicion.charAt(i) != ')' && condicion.charAt(i) != '{'){
+                condicionFinal+=condicion.charAt(i);
+            }else if(condicion.charAt(i) == '('){
+                condicionFinal+=" ";
+            }
+            if(condicion.charAt(i) == ')'){
+                break;
+            }
+        }
+        condicionFinal = condicionFinal.replaceAll("while", "if");
+        return condicionFinal;
+    }
+    
+    public String imprirmirCondicion(String condicion){
+        String condicionFinal = " ";
+        for(int i = 0; i<condicion.length(); i++){
+            if(condicion.charAt(i) != '(' && condicion.charAt(i) != ')' && condicion.charAt(i) != '{'){
+                condicionFinal+=condicion.charAt(i);
+            }else if(condicion.charAt(i) == '('){
+                condicionFinal+=" ";
+            }
+            if(condicion.charAt(i) == ')'){
+                break;
+            }
+        }
+        return condicionFinal;
+    }
+    
+    public void revisarLinea(String linea,int numLabel){
+        
+        if(this.banderaBloque == 1){
+            this.LINEA+="L"+this.numLabel+":\n";
+            //System.out.println("L"+this.numLabel+":\n");
+        }
+        if(linea.contains("if(")){
+            this.deque.addFirst(new Salto(numLabel,"if"));
+            //System.out.println(this.imprirmirCondicion(linea) + " goto L"+(numLabel));
+            this.LINEA+=this.imprirmirCondicion(linea) + " goto L"+(numLabel)+"\n";
+            //System.out.println("goto IE"+(numLabel+1));
+            this.LINEA+="goto IE"+(numLabel+1)+"\n";
+            this.banderaBloque = 1;
+            this.numLabel = numLabel;
+            return;
+        }
+        if(linea.contains("while(")){
+            this.deque.addFirst(new Salto(numLabel,"while"));
+            //System.out.println("L"+numLabel+":");
+            this.LINEA+="L"+numLabel+":\n";
+            //System.out.println(this.imprimirWhile(linea)+" goto w"+numLabel);
+            this.LINEA+=this.imprimirWhile(linea)+" goto w"+numLabel+"\n";
+            //System.out.println("goto WE"+(numLabel+1));
+            this.LINEA+="goto WE"+(numLabel+1)+"\n";
+            //System.out.println("w"+numLabel+":");
+            this.LINEA+="w"+numLabel+":\n";
+            
+            return;
+        }
+        if(linea.contains("do")){
+            this.deque.addFirst(new Salto(numLabel,"do until"));
+            //System.out.println(this.imprirmirCondicion(linea) + " goto L"+(numLabel));
+            this.LINEA+=this.imprirmirCondicion(linea) + " goto L"+(numLabel)+"\n";
+            return;
+        }
+        if(linea.contains("}")){
+            String ultimoTipo = this.deque.getFirst().tipo;
+            int first = this.deque.getFirst().numeroLabel;
+           
+            if(ultimoTipo == "while"){
+                //System.out.println("goto L"+first+":");
+                this.LINEA+="goto L"+first+":\n";
+                //System.out.println("WE"+(first+1)+":");
+                this.LINEA+="WE"+(first+1)+":\n";
+            }
+            if(ultimoTipo == "if"){
+                //System.out.println("IE"+(first+1)+":");
+                this.LINEA+="IE"+(first+1)+":\n";
+            }
+            this.deque.removeFirst();
+            
+            this.numLabel = this.deque.getFirst().numeroLabel;
+            return;
+        }
+        if(linea.contains("program") || linea == null){
+            
+            return;
+        }
+        this.banderaBloque = 0;
+        //System.out.println(this.sinPuntoYComa(linea));
+        this.LINEA+=this.sinPuntoYComa(linea)+"\n";
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem btnCompilacion;
     private javax.swing.JPanel fondo;
@@ -599,4 +744,14 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextArea txtAreaSintactico;
     // End of variables declaration//GEN-END:variables
     private javax.swing.JTextArea textoCodigoCompilar;
+}
+class Salto{
+    public int numeroLabel;
+    public String tipo;
+    
+    public Salto(int no, String tipo){
+        this.numeroLabel = no;
+        this.tipo = tipo;
+    }
+    
 }
